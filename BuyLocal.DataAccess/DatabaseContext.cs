@@ -13,6 +13,7 @@ namespace BuyLocal.DataAccess
         {
         }
         public DbSet<User> User { get; set; }
+        public DbSet<Error> Error { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -33,6 +34,13 @@ namespace BuyLocal.DataAccess
                 entity.Property(e => e.Username).IsRequired();
                 entity.Property(e => e.IsSupplier).IsRequired();
                 entity.Property(e => e.UserType).IsRequired();
+            });
+
+            modelBuilder.Entity<Error>(entity =>
+            {
+                entity.Property(e => e.StackTrace).IsRequired();
+                entity.Property(e => e.CreatedUserId).IsRequired();
+                entity.Property(e => e.CreatedDate).IsRequired();
             });
         }
     }

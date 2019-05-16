@@ -34,5 +34,44 @@ namespace BuyLocal.BusinessLayer.Models
         public int CreatedUserId { get; set; }
         [DataMember]
         public int ModifiedUserId { get; set; }
+
+        public DataAccess.Entities.User ConvertUserTodbUser(User user) {
+            return new DataAccess.Entities.User()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Username = user.Username,
+                Password = user.Password,
+                Salt = user.Salt,
+                IsSupplier = user.IsSupplier,
+                UserType = user.UserType,
+                ConfirmPassword = user.ConfirmPassword,
+                CreatedDate = user.CreatedDate,
+                ModifiedDate = user.ModifiedDate,
+                CreatedUserId = user.CreatedUserId,
+                ModifiedUserId = user.ModifiedUserId,
+            };
+        }
+
+        public User ConvertdbUserToUser(DataAccess.Entities.User user)
+        {
+            return new User()
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Surname = user.Surname,
+                Username = user.Username,
+                Password = user.Password,
+                Salt = user.Salt,
+                IsSupplier = user.IsSupplier,
+                UserType = user.UserType,
+                ConfirmPassword = user.ConfirmPassword,
+                CreatedDate = user.CreatedDate,
+                ModifiedDate = user.ModifiedDate,
+                CreatedUserId = user.CreatedUserId,
+                ModifiedUserId = user.ModifiedUserId,
+            };
+        }
     }
 }

@@ -8,5 +8,7 @@ namespace BuyLocal.DataAccess.Interfaces
     public interface IUser
     {
         User Login(string password, string username);
+        void CreateUser(User user);
+        User GetUserByUsername(string username);
     }
 }

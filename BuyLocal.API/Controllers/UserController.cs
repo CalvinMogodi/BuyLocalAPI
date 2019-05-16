@@ -37,7 +37,14 @@ namespace BuyLocal.API.Controllers
         [HttpGet]
         public string Login(string password, string username)
         {
-            User user = _userRepository.Login(password, username);
+            BuyLocalRespond respond = _userRepository.Login(password, username);
+            return JsonConvert.SerializeObject(respond);
+        }
+
+        [HttpPost]
+        public string RegisterUser([FromBody]User user)
+        {
+            BuyLocalRespond respond = _userRepository.CreateUser(user);
             return JsonConvert.SerializeObject(user);
         }
 

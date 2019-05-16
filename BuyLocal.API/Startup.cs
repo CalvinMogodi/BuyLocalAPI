@@ -47,7 +47,11 @@ namespace BuyLocal.API
             {
                 app.UseHsts();
             }
-            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyMethod());
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
+            app.UseCors(builder => builder.WithOrigins("https://localhost:44312").AllowAnyMethod());
             app.UseHttpsRedirection();
             app.UseMvc();
         }

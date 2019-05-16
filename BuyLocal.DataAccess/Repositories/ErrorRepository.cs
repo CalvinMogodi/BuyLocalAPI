@@ -2,12 +2,11 @@
 using BuyLocal.DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BuyLocal.DataAccess.Repositories
 {
-    public class UserRepository : IUser
+    public class ErrorRepository : IError
     {
         #region Properties
         /// <summary>
@@ -21,7 +20,7 @@ namespace BuyLocal.DataAccess.Repositories
         /// Initializes a new instanace of the <see cref="DataAccessRepository"/> class
         /// </summary>
         /// <param name="dbContext"></param>
-        public UserRepository(DatabaseContext dbContext)
+        public ErrorRepository(DatabaseContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -29,20 +28,18 @@ namespace BuyLocal.DataAccess.Repositories
 
         #region Methods
 
-        public User Login(string password, string username) {
-            return _dbContext.User.FirstOrDefault(u => u.Password == password && u.Username == username);           
-        }
-
-        public void CreateUser(User user)
+        public void LogError(Exception exception)
         {
-            _dbContext.User.Add(user);
+            Error error = new Error() {
+                    StackTrace = exception.StackTrace,
+                    Message = exception.Message,
+                    CreatedDate = DateTime.Now,
+                    CreatedUserId = 0
+                };
+            _dbContext.Error.Add(error);
             _dbContext.SaveChanges();
         }
 
-        public User GetUserByUsername(string username)
-        {
-            return _dbContext.User.Find(username);
-        }
         #endregion
     }
 }

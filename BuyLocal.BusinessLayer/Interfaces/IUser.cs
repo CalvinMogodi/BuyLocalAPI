@@ -7,7 +7,9 @@ namespace BuyLocal.BusinessLayer.Interfaces
 {
     public interface IUser
     {
-        User Login(string password, string username);
+        BuyLocalRespond Login(string password, string username);
+        BuyLocalRespond CreateUser(User user);
+        User GetUserByUsername(string username);
 
     }
 }

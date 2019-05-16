@@ -1,4 +1,5 @@
-﻿using BuyLocal.BusinessLayer.Interfaces;
+﻿using BuyLocal.BusinessLayer.Helpers;
+using BuyLocal.BusinessLayer.Interfaces;
 using BuyLocal.BusinessLayer.Models;
 using BuyLocal.DataAccess;
 using System;
@@ -26,27 +27,82 @@ namespace BuyLocal.BusinessLayer.Repositories
         #endregion
 
         #region Methods
-        public User Login(string password, string username)
+        public BuyLocalRespond Login(string password, string username)
+        {
+            BuyLocalRespond buyLocalRespond = new BuyLocalRespond();
+            DataAccess.Repositories.ErrorRepository errorLogger = new DataAccess.Repositories.ErrorRepository(_context);
+            try
+            {
+                DataAccess.Repositories.UserRepository dbUserRepository = new DataAccess.Repositories.UserRepository(_context);                
+                var dbUser = dbUserRepository.Login(password, username);
+                User user = new User();
+                if (dbUser != null) {
+                    user = user.ConvertdbUserToUser(dbUser);
+                    buyLocalRespond.Respond = user;
+                }                    
+                else {
+                    buyLocalRespond.Respond = null;
+                    buyLocalRespond.Error = "This user doesn't exists";
+                }
+                buyLocalRespond.IsSuccessful = true;                
+                
+            }
+            catch (Exception ex)
+            {
+                errorLogger.LogError(ex);
+                buyLocalRespond.IsSuccessful = false;
+                buyLocalRespond.Error = "Unable to log user in";
+                buyLocalRespond.Respond = null;
+            }
+
+            return buyLocalRespond;
+        }
+
+        public BuyLocalRespond CreateUser(User user)
+        {
+            BuyLocalRespond buyLocalRespond = new BuyLocalRespond();
+            DataAccess.Repositories.ErrorRepository errorLogger = new DataAccess.Repositories.ErrorRepository(_context);
+            try
+            {
+                DataAccess.Repositories.UserRepository dbUserRepository = new DataAccess.Repositories.UserRepository(_context);
+               
+                var checkUserInDB = dbUserRepository.GetUserByUsername(user.Username);
+                if (checkUserInDB != null)
+                {
+                    buyLocalRespond.IsSuccessful = true;
+                    buyLocalRespond.Error = "User with this username already exists";
+                    buyLocalRespond.Respond = null;
+                }
+                else {
+                    PasswordEnDecryption passwordEnDecryption = new PasswordEnDecryption();
+                    user.Salt = passwordEnDecryption.CreateSalt(user.Username.Length);
+                    user.Password = passwordEnDecryption.GenerateHash(user.Password , user.Salt);
+                    var dbUser = user.ConvertUserTodbUser(user);
+                    dbUserRepository.CreateUser(dbUser);
+                    var newUser = GetUserByUsername(user.Username);
+                    buyLocalRespond.IsSuccessful = true;
+                    buyLocalRespond.Respond = newUser;
+                }    
+            }
+            catch (Exception ex)
+            {
+                errorLogger.LogError(ex);
+                buyLocalRespond.IsSuccessful = false;
+                buyLocalRespond.Error = "Unable to register user";
+                buyLocalRespond.Respond = null;
+            }
+           
+            return buyLocalRespond;
+        }
+
+        public User GetUserByUsername(string username)
         {
             DataAccess.Repositories.UserRepository dbUserRepository = new DataAccess.Repositories.UserRepository(_context);
-            var dbUser = dbUserRepository.Login(password, username);
+            var dbUser = dbUserRepository.GetUserByUsername(username);
             User user = new User();
-            if (user != null)
-            {
-                user.Id = dbUser.Id;
-                user.Name = dbUser.Name;
-                user.Surname = dbUser.Surname;
-                user.Username = dbUser.Username;
-                user.Password = dbUser.Password;
-                user.Salt = dbUser.Salt;
-                user.IsSupplier = dbUser.IsSupplier;
-                user.UserType = dbUser.UserType;
-                user.ConfirmPassword = dbUser.ConfirmPassword;
-                user.CreatedDate = dbUser.CreatedDate;
-                user.ModifiedDate = dbUser.ModifiedDate;
-                user.CreatedUserId = dbUser.CreatedUserId;
-                user.ModifiedUserId = dbUser.ModifiedUserId;
-            }
+
+            if (dbUser != null)
+                user = user.ConvertdbUserToUser(dbUser);
             return user;
         }
 
