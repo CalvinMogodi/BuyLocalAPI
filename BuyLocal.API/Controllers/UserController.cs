@@ -11,7 +11,8 @@ using Newtonsoft.Json;
 
 namespace BuyLocal.API.Controllers
 {
-    [Route("api/[controller]")]
+    //[Produces("application/json")]
+    [Route("api/User")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -35,6 +36,7 @@ namespace BuyLocal.API.Controllers
 
         #region Methods
         [HttpGet]
+        [Route("Login")]
         public string Login(string password, string username)
         {
             BuyLocalRespond respond = _userRepository.Login(password, username);
@@ -42,6 +44,7 @@ namespace BuyLocal.API.Controllers
         }
 
         [HttpPost]
+        [Route("RegisterUser")]
         public string RegisterUser([FromBody]User user)
         {
             BuyLocalRespond respond = _userRepository.CreateUser(user);
@@ -49,6 +52,6 @@ namespace BuyLocal.API.Controllers
         }
 
         #endregion
-
     }
+
 }
