@@ -41,7 +41,7 @@ namespace BuyLocal.DataAccess.Repositories
 
         public User GetUserByUsername(string username)
         {
-            return _dbContext.User.Find(username);
+            return _dbContext.User.FirstOrDefault(u => u.Username.ToLower().Trim() == username.ToLower().Trim());
         }
         #endregion
     }

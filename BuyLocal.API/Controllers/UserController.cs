@@ -48,7 +48,7 @@ namespace BuyLocal.API.Controllers
         public string RegisterUser([FromBody]User user)
         {
             BuyLocalRespond respond = _userRepository.CreateUser(user);
-            return JsonConvert.SerializeObject(user);
+            return JsonConvert.SerializeObject(respond);
         }
 
         #endregion

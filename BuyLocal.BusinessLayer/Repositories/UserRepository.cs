@@ -34,16 +34,29 @@ namespace BuyLocal.BusinessLayer.Repositories
             try
             {
                 DataAccess.Repositories.UserRepository dbUserRepository = new DataAccess.Repositories.UserRepository(_context);                
-                var dbUser = dbUserRepository.Login(password, username);
-                User user = new User();
-                if (dbUser != null) {
-                    user = user.ConvertdbUserToUser(dbUser);
-                    buyLocalRespond.Respond = user;
-                }                    
+                var dbUser = dbUserRepository.GetUserByUsername(username);
+
+                PasswordEnDecryption passwordEnDecryption = new PasswordEnDecryption();
+                if (dbUser != null)
+                {
+                    bool areEqual = passwordEnDecryption.AreEqual(password, dbUser.Password, dbUser.Salt);
+                    if (areEqual)
+                    {
+                        User user = new User();
+                        user = user.ConvertdbUserToUser(dbUser);
+                        buyLocalRespond.Respond = user;
+                    }
+                    else
+                    {
+                        buyLocalRespond.Respond = null;
+                        buyLocalRespond.Error = "Invalid username or password";
+                    }
+                }
                 else {
                     buyLocalRespond.Respond = null;
                     buyLocalRespond.Error = "This user doesn't exists";
                 }
+                
                 buyLocalRespond.IsSuccessful = true;                
                 
             }
