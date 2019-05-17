@@ -49,6 +49,8 @@ namespace BuyLocal.BusinessLayer.Models
                 ModifiedDate = user.ModifiedDate,
                 CreatedUserId = user.CreatedUserId,
                 ModifiedUserId = user.ModifiedUserId,
+                Password = user.Password,
+                Salt = user.Salt,
             };
         }
 

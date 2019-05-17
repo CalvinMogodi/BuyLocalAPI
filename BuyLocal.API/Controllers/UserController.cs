@@ -25,9 +25,9 @@ namespace BuyLocal.API.Controllers
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instanace of the <see cref="ProductController"/> class
+        /// Initializes a new instanace of the <see cref="UserController"/> class
         /// </summary>
-        /// <param name="commonRepository"></param>
+        /// <param name="userRepository"></param>
         public UserController(IUser userRepository)
         {
             _userRepository = userRepository;

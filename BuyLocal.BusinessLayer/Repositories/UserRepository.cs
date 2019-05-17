@@ -90,7 +90,11 @@ namespace BuyLocal.BusinessLayer.Repositories
                     PasswordEnDecryption passwordEnDecryption = new PasswordEnDecryption();
                     user.Salt = passwordEnDecryption.CreateSalt(user.Username.Length);
                     user.Password = passwordEnDecryption.GenerateHash(user.Password , user.Salt);
-                    var dbUser = user.ConvertUserTodbUser(user);
+                    user.ConfirmPassword = true;
+                    user.CreatedDate = DateTime.Now;
+                    user.ModifiedDate = DateTime.Now;
+                    user.CreatedUserId = 1;
+                    var dbUser = user.ConvertUserTodbUser(user);                    
                     dbUserRepository.CreateUser(dbUser);
                     var newUser = GetUserByUsername(user.Username);
                     buyLocalRespond.IsSuccessful = true;

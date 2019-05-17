@@ -33,6 +33,9 @@ namespace BuyLocal.API
             services.AddDbContext<DatabaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc();
             services.AddTransient<IUser, UserRepository>();
+            services.AddTransient<IOrder, OrderRepository>();
+            services.AddTransient<IProduct, ProductRepository>();
+            services.AddTransient<IStore, StoreRepository>();
             services.AddCors();
         }
 
@@ -47,7 +50,7 @@ namespace BuyLocal.API
             {
                 app.UseHsts();
             }
-            app.UseCors(builder => builder.WithOrigins("https://localhost:44312").AllowAnyMethod());
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod());
             app.UseHttpsRedirection();
             app.UseMvc();
         }
